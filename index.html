@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>miau</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&family=Funnel+Display:wght@600&display=swap');
+
+
+            *{ 
+                margin:0;
+                padding:0;
+            }
+
+            :root{
+                --fondo:#6500B3;
+                --figura:#009405;
+                --destaque:black;
+                --textos1: "Funnel Display", sans-serif;
+                --textos2: "Barlow", sans-serif;
+
+            }
+
+            body {
+                font-family: var(--textos2);
+                color: var(--figura);
+                background: var(--fondo);
+            }
+
+            h1 {
+                font-family: var(--textos1);
+                text-align: center;
+                font-size:calc(1rem * 2vw + 2vh);
+            }
+
+            #escondido{
+                display: none;
+            }
+
+            div.contenedor{ 
+                width: calc(100% - 6%);
+                max-width: 600px;
+                margin: 5% auto;
+                padding: 3%;
+                background: white;
+                box-shadow: 0 0 3px gray;
+                border-radius: 10px;
+                /*text-align: center;*/
+            }
+                
+
+            ul { /* la coma es para que se aplique en esos dos elemetnos*/
+                list-style-position: inside;
+                list-style: none;
+                width: 100%;
+                margin: 1rem 0;
+                border-top: 3px solid var(--fondo)
+            }
+            ul li {
+                border-bottom:1px solid var(--fondo);
+                padding:.6rem 0;
+            }
+            ul li:last-child {
+                border-bottom: 3px solid var(--fondo);
+                
+            }
+            ul li a {
+                margin-right: 2%;
+                text-decoration: none;
+                color: var(--destaque);
+                transition: all ease 1s;
+            }
+            ul li a:hover {
+                letter-spacing: .1rem;
+                transition: all ease .5s;
+            }
+            /*figure svg use {
+                animation: nombre 2s infinite alternate;
+
+            }*/
+
+            figure svg use[href="#bien"] {
+                animation: nombre 8s infinite alternate;
+            }
+            figure svg use[href="#mal"] {
+                animation: nombre 3s infinite alternate;
+            }
+            
+            @keyframes nombre {
+                0%{
+                    fill:#6500B3;
+                    transform: rotate(359deg);
+                    transform-origin: center;
+                }
+                100%{
+                    fill: #009405;
+                    transform-origin: center;
+                }
+                
+            }
+            
+            #first {
+              display: block;
+            }
+
+            #second {
+              display: none;
+            }
+
+            @media screen and (min-width: 600px) {
+              #first {
+                display: none;
+              }
+
+              #second {
+                display: block;
+              }
+            }
+
+        </style>
+    </head>
+    <body>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" id="escondido">
+            <symbol id="bien" width="16" height="16" viewBox="0 0 16 16">
+                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+            </symbol>
+            <symbol id="mal" width="16" height="16" viewBox="0 0 16 16">
+                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16M4.5 6h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1m5 0h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1m-5 4h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1"/>
+            </symbol>
+        </svg>
+
+        <div class="contenedor">
+            <h1>Hola mundo</h1>
+            <ul id="estudiantes"></ul>
+            <figure>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+                    <use href="#bien"/>
+                    <use href="#mal" x="16"/>
+                </svg>
+            </figure>
+        </div>
+        <script>
+            fetch("https://raw.githubusercontent.com/profesorfaco/opr/refs/heads/main/clase-07/registros.json")
+                .then((respuesta) => {
+                    if (!respuesta.ok) {
+                        throw new Error("Error HTTP: " + respuesta.status);
+                    }
+                    return respuesta.json();
+                })
+
+                .then((datos) => {
+                    var trabajo = datos;
+                    console.log("Datos recibidos:", trabajo);
+                    const donde = document.getElementById("estudiantes");
+
+                    //repita
+                    trabajo.forEach((x) => {
+                        var cuantos = [];
+                        if (x.uno != "") {
+                            cuantos.push(x.uno);
+                        }
+                        if (x.dos != "") {
+                            cuantos.push(x.dos);
+                        }
+                        if (x.tres != "") {
+                            cuantos.push(x.tres);
+                        }
+                        if (x.cuatro != "") {
+                            cuantos.push(x.cuatro);
+                        }
+                        if (x.seis != "") {
+                            cuantos.push(x.seis);
+                        }
+                        if (x.siete != "") {
+                            cuantos.push(x.siete);
+                        }
+
+                        donde.innerHTML += `<li><a href="${x.cuenta}">${x.nombre}</a> ${pelotitas(cuantos)}</li>`;
+                    });
+
+                    function pelotitas(n) {
+                        var armado = "";
+                        n.forEach((e) => {
+                            if(e[1]){
+                                armado += `<a href="${e[0]}" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><use href="#bien" fill="#7510CC"/></svg></a>`;
+                            } else {
+                                armado += `<a href="${e[0]}" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><use href="#mal" fill="#009405"/></svg></a>`;
+                            }
+                        });
+                        return armado;
+                    }
+                })
+
+                .catch((error) => {
+                    console.error("Algo salió mal:", error);
+                });
+        </script>
+    </body>
+</html>
+
